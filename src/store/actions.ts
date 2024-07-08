@@ -1,75 +1,55 @@
-import {
-    ActionTypes,
-    AddCardAction,
-    AppThunk,
-    CloseAddNewCardScreenAction,
-    OpenAddNewCardScreenAction,
-    RemoveCardAction,
-    TriggerEditAction,
-} from './constants';
+import { OpenAddNewCardScreenAction, CloseAddNewCardScreenAction, TriggerEditAction } from './actions';
+import { AddCardAction, RemoveCardAction } from './cardActions';
+import { AppThunk } from './thunks';
 import { CardInfo } from '../add-new-card/add-new-card';
 import { Dispatch } from 'redux';
 import { getStorage, removeCardFromLocalStorages, storeCardToLocalStorage } from '../storage';
 
-export const openAddNewCardScreen = ():OpenAddNewCardScreenAction => {
-    return {
-        type: ActionTypes.OpenAddNewCardScreen,
-    }
-};
+export const openAddNewCardScreen = (): OpenAddNewCardScreenAction => ({
+    type: 'OPEN_ADD_NEW_CARD_SCREEN',
+});
 
-export const closeAddNewCardScren = ():CloseAddNewCardScreenAction => {
-    return {
-        type: ActionTypes.CloseAddNewCardScreen,
-    }
-};
+export const closeAddNewCardScreen = (): CloseAddNewCardScreenAction => ({
+    type: 'CLOSE_ADD_NEW_CARD_SCREEN',
+});
 
-export const triggerEdit = (cardNumber: string):TriggerEditAction => {
-    return {
-        type: ActionTypes.TriggerEdit,
-        payload: {
-            cardNumber
-        }
+export const triggerEdit = (cardNumber: string): TriggerEditAction => ({
+    type: 'TRIGGER_EDIT',
+    payload: {
+        cardNumber
     }
-};
+});
 
-export const addNewCard = (cardInfo: CardInfo): AddCardAction => {
-    return {
-        type: ActionTypes.AddCard,
-        payload: {
-            cardInfo,
-        }
+export const addNewCard = (cardInfo: CardInfo): AddCardAction => ({
+    type: 'ADD_CARD',
+    payload: {
+        cardInfo,
     }
-}
+});
 
-export const removeCard = (cardInfo: CardInfo): RemoveCardAction => {
-    return {
-        type: ActionTypes.RemoveCard,
-        payload: {
-            cardInfo,
-        }
+export const removeCard = (cardInfo: CardInfo): RemoveCardAction => ({
+    type: 'REMOVE_CARD',
+    payload: {
+        cardInfo,
     }
-}
+});
 
-export const addCardThunk = (card: CardInfo): AppThunk => {
-    return (dispatch: Dispatch): void => {
+export const addCardThunk = (card: CardInfo): AppThunk => 
+    (dispatch: Dispatch): void => {
         storeCardToLocalStorage(card);
         dispatch(addNewCard(card));
-    }
-}
+    };
 
-export const removeCardThunk = (card: CardInfo): AppThunk => {
-    return (dispatch: Dispatch): void => {
+export const removeCardThunk = (card: CardInfo): AppThunk => 
+    (dispatch: Dispatch): void => {
         removeCardFromLocalStorages(card);
         dispatch(removeCard(card));
-    }
-}
+    };
 
-export const initCardsThunk = (): AppThunk => {
-    return (dispatch: Dispatch): void => {
+export const initCardsThunk = (): AppThunk => 
+    (dispatch: Dispatch): void => {
         const cards: CardInfo[] = getStorage<CardInfo[]>('cardInfo') || [];
         cards.forEach((card: CardInfo) => {
             dispatch(addNewCard(card))
         });
-    }
-}
-
+    };
